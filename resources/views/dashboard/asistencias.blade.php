@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="container mt-2">
-<a href="{{ route('pdf') }}" class="btn btn-primary btn-sm">Generar Informe de asistencias</a>
+<a href="{{ route('pdfAssistGeneral') }}" class="btn btn-primary btn-sm">Generar Informe de asistencias</a>
 </div>
 <div class="row justify-content-center mt-3">
   <div class="col-md-12">

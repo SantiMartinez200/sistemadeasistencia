@@ -1,5 +1,8 @@
 @extends('layouts.app')
   @section('content')
+  <div class="container mt-2">
+    <a href="{{ route('pdfAssistReg') }}" class="btn btn-primary btn-sm">Generar Informe de Regulares por asistencias</a>
+  </div>
 <div class="row justify-content-center mt-3">
     <div class="col-md-12">
       <div class="container">

@@ -181,10 +181,31 @@ class StudentController extends Controller
     return $completeStudent;
   }
 
-  public function pdf()
+  public function pdfAssistGeneral()
   {
     $students = $this->staticCompleteStudentStatus();
     $pdf = pdf::loadView('pdf.pdf', compact('students'));
+    return $pdf->stream();
+  }
+
+  public function pdfAssistProm()
+  {
+    $students = $this->staticCompleteStudentStatus();
+    $pdf = pdf::loadView('pdf.pdfpromocion', compact('students'));
+    return $pdf->stream();
+  }
+
+  public function pdfAssistReg()
+  {
+    $students = $this->staticCompleteStudentStatus();
+    $pdf = pdf::loadView('pdf.pdfregular', compact('students'));
+    return $pdf->stream();
+  }
+
+  public function pdfAssistAud()
+  {
+    $students = $this->staticCompleteStudentStatus();
+    $pdf = pdf::loadView('pdf.pdflibre', compact('students'));
     return $pdf->stream();
   }
 

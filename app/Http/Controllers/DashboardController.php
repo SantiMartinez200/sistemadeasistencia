@@ -8,8 +8,6 @@ use App\Models\Param;
 use Carbon\Carbon;
 use App\Models\Student;
 
-
-
 class DashboardController extends Controller
 {
   public static function getStudentsAssists()
@@ -27,51 +25,31 @@ class DashboardController extends Controller
     $params = Param::all();
     return $params;
   }
-
-  public function determineRegularized()
+  public function determineResults()
   {
     $params = $this->getParams();
     $distinctStudentsAssists = $this->getStudentsAssists();
-    $avgRegularized = 0;
+    $countRegulars = 0;
+    $countPromoted = 0;
+    $countAuditors = 0;
+    $array = [];
     for ($i = 0; $i < count($distinctStudentsAssists); $i++) {
       $calculate = ($distinctStudentsAssists[$i]->assist_count) / ($params[0]->total_classes) * 100;
       if (($calculate >= $params[0]->regular) && ($calculate < $params[0]->promote)) {
-        $avgRegularized = $avgRegularized + 1;
+        $countRegulars = $countRegulars + 1;
+      }elseif($calculate >= $params[0]->promote){
+        $countPromoted = $countPromoted + 1;
+      }elseif($calculate < $params[0]->regular){
+        $countAuditors = $countAuditors + 1;
       }
     }
-    return $avgRegularized;
+    $array = [
+      'promoted' => $countPromoted,
+      'regularized' => $countRegulars,
+      'auditors' => $countAuditors
+    ];
+    return $array;
   }
-
-
-  public function determinePromoted()
-  {
-    $params = $this->getParams();
-    $distinctStudentsAssists = $this->getStudentsAssists();
-    $avgPromoted = 0;
-    for ($i = 0; $i < count($distinctStudentsAssists); $i++) {
-      $calculate = ($distinctStudentsAssists[$i]->assist_count) / ($params[0]->total_classes) * 100;
-      if (($calculate >= $params[0]->promote)) {
-        $avgPromoted = $avgPromoted + 1;
-      }
-    }
-    return $avgPromoted;
-  }
-
-
-  public function determineAuditor()
-  {
-    $params = $this->getParams();
-    $distinctStudentsAssists = $this->getStudentsAssists();
-    $avgAuditor = 0;
-    for ($i = 0; $i < count($distinctStudentsAssists); $i++) {
-      $calculate = ($distinctStudentsAssists[$i]->assist_count) / ($params[0]->total_classes) * 100;
-      if (($calculate < $params[0]->regular)) {
-        $avgAuditor = $avgAuditor + 1;
-      }
-    }
-    return $avgAuditor;
-  }
-
   public static function countAllAssists()
   {
     $allAssists = DB::table('assists')
@@ -81,7 +59,6 @@ class DashboardController extends Controller
       ->count();
     return $allAssists;
   }
-
   public static function birthdays()
   {
     $student = Student::all()->toArray();
@@ -99,17 +76,12 @@ class DashboardController extends Controller
     }
     return $StudentAndBirthday;
   }
-
   public function compactData()
   {
-    $promoted = $this->determinePromoted();
-    $regularized = $this->determineRegularized();
-    $auditor = $this->determineAuditor();
+    $results = $this->determineResults();
     $total_assists = $this->countAllAssists();
-    $results = ['promoted' => $promoted, 'regularized' => $regularized, 'auditor' => $auditor, 'total_assists' => $total_assists];
     $birthdays = $this->birthdays();
-
-    return view('dashboard.dashboard', compact('results', 'birthdays'));
+    return view('dashboard.dashboard', compact('results', 'birthdays', 'total_assists'));
   }
 
 

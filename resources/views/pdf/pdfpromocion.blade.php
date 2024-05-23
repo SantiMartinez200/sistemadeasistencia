@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>General</title>
+  <title>Promocionados</title>
 </head>
-
-<style>
+<body>
+ <style>
   * {
     font-family: sans-serif;
     /* Change your font family */
@@ -26,7 +25,7 @@
   }
 
   .content-table thead tr {
-    background-color: #1B85B8;
+    background-color: #559e83;
     color: #ffffff;
     text-align: left;
     font-weight: bold;
@@ -46,18 +45,18 @@
   }
 
   .content-table tbody tr:last-of-type {
-    border-bottom: 2px solid #1B85B8;
+    border-bottom: 2px solid #559e83;
   }
 
   .content-table tbody tr.active-row {
     font-weight: bold;
-    color: #1B85B8;
+    color: #559e83;
   }
 </style>
 
 <body>
   <div class="container">
-    <h3>Informe de Alumnos en base a sus asistencias.</h3>
+    <h3>Informe de Alumnos promocionados.</h3>
     <table class="content-table">
       <thead>
         <tr>
@@ -70,6 +69,7 @@
       </thead>
       <tbody>
         @forelse ($students as $student)
+        @if($student["status"] == "Promoción")
       <tr>
       <td data-column="dni">{{ $student["dni_student"] }}</td>
       <td data-column="Nombre"> {{ $student["name"] }}</td>
@@ -77,6 +77,7 @@
       <td data-column="Cantidad de Asistencias">{{ $student["assist_count"]}}</td>
       <td data-column="Condicion">{{ $student["status"] }}</td>
       </tr>
+      @endif
     @empty
     <td colspan="6">
     <span class="text-danger">
