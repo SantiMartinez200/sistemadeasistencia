@@ -6,6 +6,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\ParamController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StudentStatusController;
+use App\Http\Controllers\PdfController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -58,13 +59,9 @@ Route::middleware('auth')->group(function () {
   Route::get('/regulares', [StudentStatusController::class, 'compactRegularized'])->name('regulares');
   Route::get('/asistencias', [StudentStatusController::class, 'compactAssists'])->name('asistencias');
 
-  Route::get('test', [DashboardController::class, 'birthdays'])->name('test');
+  //Route::get('test', [StudentController::class, 'staticCompleteStudentStatus'])->name('test');
 
-  /*Route::get();
-
-  Route::get();
-
-  Route::get();*/
+  Route::get('pdf/pdf', [StudentController::class,'pdf'])->name('pdf');
 });
 
 require __DIR__.'/auth.php';

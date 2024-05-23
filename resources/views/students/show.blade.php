@@ -41,7 +41,7 @@
             <label for="birthday" class="col-md-4 col-form-label text-md-end text-start"><strong>Fecha de
                 Nacimiento:</strong></label>
             <div class="col-md-6" style="line-height: 35px;">
-              {{ $student->birthday }}
+              {{ $fecha = date('d/m/Y ',strtotime($student->birthday)) }}
             </div>
           </div>
 
@@ -52,6 +52,16 @@
               {{ $student->group_student }}
             </div>
           </div>
+
+
+             <div class="row">
+            <label for="avergae"
+              class="col-md-4 col-form-label text-md-end text-start"><strong>Promedio:</strong></label>
+            <div class="col-md-6" style="line-height: 35px;">
+              {{ $average }}%
+            </div>
+          </div>
+
           <div class="row">
             <label for="group_student"
               class="col-md-4 col-form-label text-md-end text-start"><strong>Asistencias:</strong></label>

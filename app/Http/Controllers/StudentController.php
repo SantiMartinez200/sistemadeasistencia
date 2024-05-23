@@ -10,6 +10,7 @@ use App\Http\Requests\StoreStudentRequest;
 use App\Http\Requests\UpdateStudentRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 
 class StudentController extends Controller
@@ -39,10 +40,10 @@ class StudentController extends Controller
     $onlyYear = date('Y', strtotime($val));
     //$thisYear = Carbon::now()->format('Y');
     $thisYear = date('Y');
-    if(($thisYear - $onlyYear) < 17){
+    if (($thisYear - $onlyYear) < 17) {
       return redirect()->route('students.create')
-        ->with('status','La fecha de nacimiento es inválida, solo mayores a 18');
-    }else{
+        ->with('status', 'La fecha de nacimiento es inválida, solo mayores a 18');
+    } else {
       Student::create($request->all());
       return redirect()->route('students.index')
         ->withSuccess('Se ha añadido un nuevo estudiante correctamente.');
@@ -54,7 +55,6 @@ class StudentController extends Controller
    */
   public function show(Student $student): View
   {
-    //get assists
     $getAllAssists = DB::table('assists')
       ->join('students', 'assists.student_id', '=', 'students.id')
       ->select(DB::raw('count(*) as assist_count'))
@@ -73,13 +73,14 @@ class StudentController extends Controller
       } elseif (($calculate < $params[0]->regular)) {
         $status = "Libre";
       }
-    }else{
+    } else {
       $status = "Indefinido";
     }
     return view('students.show', [
       'student' => $student,
       'assist' => $val,
-      'status' => $status
+      'status' => $status,
+      'average' => $calculate
     ]);
   }
 
@@ -110,7 +111,7 @@ class StudentController extends Controller
       return redirect()->back()
         ->withSuccess('El estudiante se actualizó correctamente.');
     }
-    
+
   }
 
   /**
@@ -143,4 +144,49 @@ class StudentController extends Controller
       'student' => $student
     ]);
   }
+
+  public static function staticCompleteStudentStatus()
+  {
+    //get assists
+    $getAllAssists = DB::table('assists')
+      ->join('students', 'assists.student_id', '=', 'students.id')
+      ->select(DB::raw('count(*) as assist_count,students.id,students.name,students.last_name,students.dni_student'))
+      ->groupBy('students.id')
+      ->get();
+
+    $params = Param::all();
+
+    $students = json_decode(json_encode($getAllAssists), true);
+    $completeStudent = [];
+    foreach ($students as $eachStudent) {
+      $assistCount = $eachStudent["assist_count"];
+      $arrayRow = $eachStudent;
+
+      $calculate = intval($assistCount) / ($params[0]->total_classes) * 100;
+      $status = 'undefined';
+      if ($assistCount > 0) {
+        if ($calculate >= $params[0]->promote) {
+          $status = "Promoción";
+        } elseif (($calculate < $params[0]->promote) && ($calculate >= $params[0]->regular)) {
+          $status = "Regular";
+        } elseif (($calculate < $params[0]->regular)) {
+          $status = "Libre";
+        }
+      } else {
+        $status = "Indefinido";
+      }
+      $arrayRow["status"] = $status;
+      array_push($completeStudent, $arrayRow);
+    }
+    return $completeStudent;
+  }
+
+  public function pdf()
+  {
+    $students = $this->staticCompleteStudentStatus();
+    $pdf = pdf::loadView('pdf.pdf', compact('students'));
+    return $pdf->stream();
+  }
+
+
 }

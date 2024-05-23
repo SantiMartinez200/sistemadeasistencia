@@ -1,5 +1,8 @@
 @extends('layouts.app')
 @section('content')
+<div class="container mt-2">
+<a href="{{ route('pdf') }}" class="btn btn-primary btn-sm">Generar Informe de asistencias</a>
+</div>
 <div class="row justify-content-center mt-3">
   <div class="col-md-12">
     <div class="container">
@@ -27,7 +30,7 @@
           <td>{{ $row["dni"] }}</td>
           <td>{{ $row["nombre"] }}</td>
           <td>{{ $row["apellido"] }}</td>
-          <td>{{ $row["registrada"] }}</td>
+          <td>{{ $fecha = date('d/m/Y H:i', strtotime($row["registrada"])) }}</td>
         </tr>
       @empty
     <td colspan="6">

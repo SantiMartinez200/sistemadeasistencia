@@ -12,27 +12,30 @@ use App\Models\Student;
 
 class DashboardController extends Controller
 {
-    public static function getStudentsAssists(){
-      $distinctStudentsAssists = DB::table('assists')
-             ->join('students','assists.student_id','=','students.id')
-             ->select(DB::raw('count(*) as assist_count, students.id,students.name,students.last_name,students.dni_student'))
-             ->groupBy('students.id')
-             ->get();
-            return $distinctStudentsAssists;
-    }
-  
-  public static function getParams(){
+  public static function getStudentsAssists()
+  {
+    $distinctStudentsAssists = DB::table('assists')
+      ->join('students', 'assists.student_id', '=', 'students.id')
+      ->select(DB::raw('count(*) as assist_count, students.id,students.name,students.last_name,students.dni_student'))
+      ->groupBy('students.id')
+      ->get();
+    return $distinctStudentsAssists;
+  }
+
+  public static function getParams()
+  {
     $params = Param::all();
     return $params;
   }
 
-  public function determineRegularized(){
+  public function determineRegularized()
+  {
     $params = $this->getParams();
     $distinctStudentsAssists = $this->getStudentsAssists();
     $avgRegularized = 0;
-    for ($i=0; $i < count($distinctStudentsAssists); $i++) {
+    for ($i = 0; $i < count($distinctStudentsAssists); $i++) {
       $calculate = ($distinctStudentsAssists[$i]->assist_count) / ($params[0]->total_classes) * 100;
-      if(($calculate >= $params[0]->regular) && ($calculate < $params[0]->promote)){
+      if (($calculate >= $params[0]->regular) && ($calculate < $params[0]->promote)) {
         $avgRegularized = $avgRegularized + 1;
       }
     }
@@ -69,14 +72,15 @@ class DashboardController extends Controller
     return $avgAuditor;
   }
 
-    public static function countAllAssists(){
+  public static function countAllAssists()
+  {
     $allAssists = DB::table('assists')
       ->join('students', 'assists.student_id', '=', 'students.id')
       ->select(DB::raw('students.id,students.name,students.last_name,students.dni_student'))
       ->get()
       ->count();
-      return $allAssists;
-    }
+    return $allAssists;
+  }
 
   public static function birthdays()
   {
@@ -96,16 +100,17 @@ class DashboardController extends Controller
     return $StudentAndBirthday;
   }
 
-    public function compactData(){
-        $promoted = $this->determinePromoted();
-        $regularized = $this->determineRegularized();
-        $auditor = $this->determineAuditor();
-        $total_assists = $this->countAllAssists();
-      $results = ['promoted' => $promoted, 'regularized' => $regularized, 'auditor' => $auditor, 'total_assists' => $total_assists];
-      $birthdays = $this->birthdays();
+  public function compactData()
+  {
+    $promoted = $this->determinePromoted();
+    $regularized = $this->determineRegularized();
+    $auditor = $this->determineAuditor();
+    $total_assists = $this->countAllAssists();
+    $results = ['promoted' => $promoted, 'regularized' => $regularized, 'auditor' => $auditor, 'total_assists' => $total_assists];
+    $birthdays = $this->birthdays();
 
-    return view('dashboard.dashboard',compact('results','birthdays'));
-    }
+    return view('dashboard.dashboard', compact('results', 'birthdays'));
+  }
 
-   
+
 }

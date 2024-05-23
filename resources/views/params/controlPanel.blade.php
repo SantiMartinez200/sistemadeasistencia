@@ -20,16 +20,16 @@
             <tbody>
               @forelse ($params as $eachParam)
         <tr>
-          <td>{{ $eachParam->promote }}</td>
-          <td>{{ $eachParam->regular }}</td>
-          <td>{{ $eachParam->total_classes }}</td>
-          <td>{{ $eachParam->created_at }}</td>
-          <td>{{ $eachParam->updated_at }}</td>
-          <td>
-          <a href="{{route("edit", $eachParam->id)}}" class="btn btn-primary btn-sm m-1"><i
-            class="bi bi-pencil-square"></i>Editar</a>
+        <td>{{ $eachParam->promote }}</td>
+        <td>{{ $eachParam->regular }}</td>
+        <td>{{ $eachParam->total_classes }}</td>
+        <td>{{ $fecha = date('d/m/Y H:i:s', strtotime($eachParam->created_at)) }}</td>
+        <td>{{ $fecha = date('d/m/Y H:i:s', strtotime($eachParam->updated_at)) }}</td>
+        <td>
+        <a href="{{route("edit", $eachParam->id)}}" class="btn btn-primary btn-sm m-1"><i
+          class="bi bi-pencil-square"></i>Editar</a>
 
-          </td>
+        </td>
         </tr>
       @empty
     <td colspan="6">

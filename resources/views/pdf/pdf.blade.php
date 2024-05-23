@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF</title>
+</head>
+
+<style>
+  * {
+    font-family: sans-serif;
+    /* Change your font family */
+  }
+
+  .content-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    min-width: 400px;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    text-align: center;
+  }
+
+  .content-table thead tr {
+    background-color: #009879;
+    color: #ffffff;
+    text-align: left;
+    font-weight: bold;
+  }
+
+  .content-table th,
+  .content-table td {
+    padding: 12px 15px;
+  }
+
+  .content-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+  }
+
+  .content-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+  }
+
+  .content-table tbody tr:last-of-type {
+    border-bottom: 2px solid #009879;
+  }
+
+  .content-table tbody tr.active-row {
+    font-weight: bold;
+    color: #009879;
+  }
+</style>
+
+<body class="container">
+  <div>
+    <table class="content-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>DNI</th>
+          <th>Cantidad de Asistencias</th>
+          <th>Condición</th>
+        </tr>
+      </thead>
+      <tbody>
+        @forelse ($students as $student)
+      <tr>
+      <td data-column="dni">{{ $student["dni_student"] }}</td>
+      <td data-column="Nombre"> {{ $student["name"] }}</td>
+      <td data-column="Apellido">{{ $student["last_name"] }}</td>
+      <td data-column="Cantidad de Asistencias">{{ $student["assist_count"]}}</td>
+      <td data-column="Condicion">{{ $student["status"] }}</td>
+      </tr>
+    @empty
+    <td colspan="6">
+    <span class="text-danger">
+      <strong>No hay estudiantes registrados!</strong>
+    </span>
+    </td>
+  @endforelse
+      </tbody>
+    </table>
+  </div>
+</body>
+
+</html>
